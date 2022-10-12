@@ -63,8 +63,7 @@ jobs:
     steps:
       - name: Terraform Plan
         id: plan
-        if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -input=false
+        run: terraform plan -input=false
         continue-on-error: true
 
       - uses: actions/github-script@v6
