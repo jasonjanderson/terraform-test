@@ -1,7 +1,7 @@
 on:
   push:
-    branches:
-      - "!main"
+    branches-ignore:
+      - main
 jobs:
   terraform:
     uses: ./.github/workflows/terraform-plan.yml
