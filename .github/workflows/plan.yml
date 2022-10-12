@@ -1,0 +1,9 @@
+on:
+  push:
+    branches:
+      - "!main"
+jobs:
+  terraform:
+    uses: ./.github/workflows/terraform-plan.yml
+    with:
+      aws_account_id: "889550907551"
