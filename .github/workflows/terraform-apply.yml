@@ -35,6 +35,9 @@ jobs:
           # terraform_version: 0.13.0:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
+      - name: Echo Context
+        run: echo "$GITHUB_CONTEXT"
+
       - name: Fetch Plan
         run: |
           aws s3 cp s3://gamechanger.terraform-state/${{ github.sha }}.tfplan plan.tfplan

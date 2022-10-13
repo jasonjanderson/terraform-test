@@ -57,7 +57,8 @@ jobs:
         id: plan
         run: terraform plan -out plan.tfplan -input=false
         continue-on-error: true
-
+      - name: Echo Context
+        run: echo "$GITHUB_CONTEXT"
       - name: Upload Plan
         id: upload-plan
         run: aws s3 cp plan.tfplan s3://gamechanger.terraform-state/${{ github.sha }}.tfplan
