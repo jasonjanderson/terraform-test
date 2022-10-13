@@ -4,7 +4,7 @@ on:
     branches-ignore:
       - main
 jobs:
-  plan:
-    uses: ./.github/workflows/terraform-plan.yml
+  apply:
+    uses: ./.github/workflows/terraform-apply.yml
     with:
       aws_account_id: "889550907551"
