@@ -54,10 +54,6 @@ jobs:
         run: terraform plan -out plan.tfplan -input=false
         continue-on-error: true
 
-      - name: Upload Plan
-        id: upload-plan
-        run: aws s3 cp plan.tfplan s3://gamechanger.terraform-state/${{ github.ref_name }}.tfplan
-
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
