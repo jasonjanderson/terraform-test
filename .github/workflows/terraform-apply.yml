@@ -53,6 +53,9 @@ jobs:
         run: terraform plan -out plan.tfplan -input=false
         continue-on-error: true
 
+      - name: ls
+        run: ls -alh
+
       - uses: actions/cache@v2
         id: restore-build
         with:
@@ -85,6 +88,9 @@ jobs:
         with:
           path: ./*
           key: ${{ github.sha }}
+
+      - name: ls
+        run: ls -alh
 
       - name: show
         run: terraform show plan.tfplan
