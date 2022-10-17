@@ -56,11 +56,16 @@ jobs:
       - name: ls
         run: ls -alh
 
-      - uses: actions/cache@v2
-        id: restore-build
-        with:
-          path: ./*
-          key: ${{ github.sha }}
+      # - uses: actions/cache@v2
+      #   id: restore-build
+      #   with:
+      #     path: ./*
+      #     key: ${{ github.sha }}
+
+      - name: Save Plan
+        run: |
+          aws s3 cp plan.tfplan s3://gamechanger.terraform-state/${{ github.sha }}.tfplan
+          terraform show plan.tfplan
 
   apply:
     name: "Apply"
@@ -70,12 +75,12 @@ jobs:
       # - name: Checkout
       #   uses: actions/checkout@v3
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: arn:aws:iam::889550907551:role/terraform
-          role-session-name: ${{ github.triggering_actor }}
-          aws-region: ${{ env.AWS_REGION }}
+      # - name: configure aws credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     role-to-assume: arn:aws:iam::889550907551:role/terraform
+      #     role-session-name: ${{ github.triggering_actor }}
+      #     aws-region: ${{ env.AWS_REGION }}
 
       # - name: Setup Terraform
       #   uses: hashicorp/setup-terraform@v1
@@ -83,19 +88,17 @@ jobs:
       #     # terraform_version: 0.13.0:
       #     cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - uses: actions/cache@v2
-        id: restore-build
-        with:
-          path: ./*
-          key: ${{ github.sha }}
+      - name: Fetch Plan
+        run: |
+          aws s3 cp s3://gamechanger.terraform-state/${{ github.sha }}.tfplan plan.tfplan
+          terraform show plan.tfplan
 
       - name: ls
         run: ls -alh
 
       - name: show
         run: |
-          cat plan.tfplan
-          terraform show plan.tfplan
+          terraform show "plan.tfplan"
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false plan.tfplan
+        run: terraform apply -auto-approve -input=false "plan.tfplan"
