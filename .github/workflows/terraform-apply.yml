@@ -72,8 +72,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      # - name: Checkout
-      #   uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
