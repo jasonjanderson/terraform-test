@@ -85,12 +85,12 @@ jobs:
 
             // 2. Set the output variable
             const fs = require('fs');
-            fs.writeFileSync('${{ env.tf_actions_working_dir }}/summary.md', output);
+            fs.writeFileSync('./summary.md', output);
             core.setOutput('summary', output);
 
       - name: Write the step summary
         if: always()
-        run: cat summary.md >> $GITHUB_STEP_SUMMARY
+        run: cat ./summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: ls
         run: ls -alh
