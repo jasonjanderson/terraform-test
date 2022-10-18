@@ -56,24 +56,31 @@ jobs:
       - name: ls
         run: ls -alh
 
-      # - uses: actions/cache@v2
-      #   id: restore-build
-      #   with:
-      #     path: ./*
-      #     key: ${{ github.sha }}
+      - uses: actions/cache@v2
+        id: restore-build
+        with:
+          path: ./*
+          key: ${{ github.sha }}
 
-      - name: Save Plan
-        run: |
-          aws s3 cp plan.tfplan s3://gamechanger.terraform-state/${{ github.sha }}.tfplan
-          terraform show plan.tfplan
+      # - name: Save Plan
+      #   run: |
+      #     aws s3 cp plan.tfplan s3://gamechanger.terraform-state/${{ github.sha }}.tfplan
+      #     terraform show plan.tfplan
 
   apply:
     name: "Apply"
+    needs: plan
     runs-on: ubuntu-latest
     environment: production
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - uses: actions/cache@v2
+        id: restore-build
+        with:
+          path: ./*
+          key: ${{ github.sha }}
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -88,14 +95,14 @@ jobs:
           terraform_version: 1.3.2
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Init
-        id: init
-        run: terraform init
+      # - name: Terraform Init
+      #   id: init
+      #   run: terraform init
 
-      - name: Fetch Plan
-        run: |
-          aws s3 cp s3://gamechanger.terraform-state/${{ github.sha }}.tfplan plan.tfplan
-          terraform show plan.tfplan
+      # - name: Fetch Plan
+      #   run: |
+      #     aws s3 cp s3://gamechanger.terraform-state/${{ github.sha }}.tfplan plan.tfplan
+      #     terraform show plan.tfplan
 
       - name: ls
         run: ls -alh
