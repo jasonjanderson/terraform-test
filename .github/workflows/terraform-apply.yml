@@ -58,7 +58,7 @@ jobs:
         if: always()
         id: summary
         env:
-          PLAN: "${{ steps.plan.outputs.stdout }}"
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
