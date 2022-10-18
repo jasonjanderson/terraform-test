@@ -58,7 +58,7 @@ jobs:
         if: always()
         id: summary
         env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          PLAN: "${{ steps.plan.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -67,13 +67,11 @@ jobs:
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
-            <details><summary>Show Plan</summary>
+            <summary>Show Plan</summary>
 
-            \`\`\`\n
+            \`\`\`terraform\n
             ${process.env.PLAN}
             \`\`\`
-
-            </details>
 
             *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
             // 2. Set the output variable
