@@ -10,14 +10,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: jasonjanderson/terraform-actions
-          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          token: ${{ secrets.GH_PAT }}
           path: .github/workflows
           ref: main
-
-      - uses: actions/cache@v3
-        with:
-          path: ./*
-          key: ${{ github.sha }}
 
   staging:
     needs: setup
