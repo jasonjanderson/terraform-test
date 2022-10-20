@@ -4,15 +4,32 @@ on:
     branches-ignore:
       - main
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: jasonjanderson/terraform-actions
+          token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
+          path: terraform-actions
+          ref: main
+
+      - uses: actions/cache@v3
+        with:
+          path: ./*
+          key: ${{ github.sha }}
+
   staging:
-    uses: ./.github/workflows/terraform.yml
+    needs: setup
+    uses: ./terraform-actions/terraform.yml
     with:
       environment: staging
       aws_account_id: "889550907551"
       plan_only: false
 
   production:
-    uses: ./.github/workflows/terraform.yml
+    needs: setup
+    uses: ./terraform-actions/terraform.yml
     with:
       environment: production
       aws_account_id: "889550907551"
