@@ -24,8 +24,8 @@ jobs:
     name: "Plan"
     runs-on: ubuntu-latest
     steps:
-      # - name: Checkout
-      #   uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
       # - name: configure aws credentials
       #   uses: aws-actions/configure-aws-credentials@v1
@@ -52,7 +52,7 @@ jobs:
       #   run: terraform validate -no-color
 
       - name: Terraform Setup
-        uses: actions/initialize-terraform@plan-test
+        uses: ./.github/actions/initialize-terraform
         with:
           aws_account_id: ${{ inputs.aws_account_id }}
           terraform_version: ${{ inputs.terraform_version }}
@@ -121,7 +121,7 @@ jobs:
       #   with:
       #     terraform_version: ${{ inputs.terraform_version }}
       - name: Terraform Setup
-        uses: actions/initialize-terraform@plan-test
+        uses: ./.github/actions/initialize-terraform
         with:
           aws_account_id: ${{ inputs.aws_account_id }}
           terraform_version: ${{ inputs.terraform_version }}
