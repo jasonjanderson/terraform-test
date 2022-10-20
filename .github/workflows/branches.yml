@@ -28,7 +28,6 @@ jobs:
   #         github_token: ${{ secrets.GITHUB_TOKEN }}
 
   staging:
-    needs: setup
     uses: ./.github/workflows/terraform.yml
     with:
       environment: staging
@@ -36,7 +35,6 @@ jobs:
       plan_only: false
 
   production:
-    needs: setup
     uses: ./.github/workflows/terraform.yml
     with:
       environment: production
