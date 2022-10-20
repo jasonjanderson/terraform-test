@@ -22,7 +22,7 @@ jobs:
 
   staging:
     needs: setup
-    uses: ./.github/workflows/terraform.yml
+    uses: ./.github/actions/terraform
     with:
       environment: staging
       aws_account_id: "889550907551"
@@ -30,7 +30,7 @@ jobs:
 
   production:
     needs: setup
-    uses: ./.github/workflows/terraform.yml
+    uses: ./.github/actions/terraform
     with:
       environment: production
       aws_account_id: "889550907551"
