@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/terraform
           role-session-name: ${{ github.triggering_actor }}
@@ -92,7 +92,7 @@ jobs:
         if: always()
         run: cat ./summary.md >> $GITHUB_STEP_SUMMARY
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: restore-build
         with:
           path: ./*
@@ -107,7 +107,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: restore-build
         with:
           path: ./*
