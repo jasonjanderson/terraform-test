@@ -6,6 +6,9 @@ on:
       aws_account_id:
         required: true
         type: string
+      environment:
+        required: true
+        type: string
       terraform_version:
         required: false
         type: string
@@ -27,35 +30,36 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      # - name: configure aws credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/terraform
-      #     role-session-name: ${{ github.triggering_actor }}
-      #     aws-region: ${{ env.AWS_REGION }}
-
-      # - name: Setup Terraform
-      #   uses: hashicorp/setup-terraform@v2
-      #   with:
-      #     terraform_version: ${{ inputs.terraform_version }}
-
-      # - name: Terraform Format
-      #   id: fmt
-      #   run: terraform fmt -check
-
-      # - name: Terraform Init
-      #   id: init
-      #   run: terraform init
-
-      # - name: Terraform Validate
-      #   id: validate
-      #   run: terraform validate -no-color
-
-      - name: Terraform Setup
-        uses: ./.github/actions/initialize-terraform
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws_account_id: ${{ inputs.aws_account_id }}
+          role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/terraform
+          role-session-name: ${{ github.triggering_actor }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
           terraform_version: ${{ inputs.terraform_version }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      # - name: Terraform Setup
+      #   id: setup
+      #   uses: ./.github/actions/initialize-terraform
+      #   with:
+      #     aws_account_id: ${{ inputs.aws_account_id }}
+      #     terraform_version: ${{ inputs.terraform_version }}
 
       - name: Terraform Plan
         id: plan
@@ -98,33 +102,33 @@ jobs:
     name: "Apply"
     needs: plan
     runs-on: ubuntu-latest
-    environment: production
+    environment: ${{ inputs.environment }}
     steps:
-      # - name: Checkout
-      #   uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      # - uses: actions/cache@v2
-      #   id: restore-build
-      #   with:
-      #     path: ./*
-      #     key: ${{ github.sha }}
-
-      # - name: configure aws credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/terraform
-      #     role-session-name: ${{ github.triggering_actor }}
-      #     aws-region: ${{ env.AWS_REGION }}
-
-      # - name: Setup Terraform
-      #   uses: hashicorp/setup-terraform@v1
-      #   with:
-      #     terraform_version: ${{ inputs.terraform_version }}
-      - name: Terraform Setup
-        uses: ./.github/actions/initialize-terraform
+      - uses: actions/cache@v2
+        id: restore-build
         with:
-          aws_account_id: ${{ inputs.aws_account_id }}
+          path: ./*
+          key: ${{ github.sha }}
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/terraform
+          role-session-name: ${{ github.triggering_actor }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
           terraform_version: ${{ inputs.terraform_version }}
+      # - name: Terraform Setup
+      #   uses: ./.github/actions/initialize-terraform
+      #   with:
+      #     aws_account_id: ${{ inputs.aws_account_id }}
+      #     terraform_version: ${{ inputs.terraform_version }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false "plan.tfplan"
