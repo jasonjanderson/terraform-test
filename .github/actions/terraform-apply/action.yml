@@ -4,6 +4,9 @@ inputs:
   aws_account_id:
     description: "The ID of the AWS account to operate on"
     required: true
+  environment:
+    description: "The name of the development environment to run plan against"
+    required: true
   aws_region:
     description: "The AWS region being used"
     required: false
@@ -27,14 +30,14 @@ runs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       id: restore-build
       with:
         path: ./*
         key: ${{ github.sha }}
 
     - name: configure aws credentials
-      uses: aws-actions/configure-aws-credentials@v1
+      uses: aws-actions/configure-aws-credentials@v1-node16
       with:
         role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/terraform
         role-session-name: ${{ github.triggering_actor }}

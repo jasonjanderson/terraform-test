@@ -9,6 +9,10 @@ on:
       environment:
         required: true
         type: string
+      plan_only:
+        required: false
+        type: boolean
+        default: true
       terraform_version:
         required: false
         type: string
@@ -54,13 +58,6 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      # - name: Terraform Setup
-      #   id: setup
-      #   uses: ./.github/actions/initialize-terraform
-      #   with:
-      #     aws_account_id: ${{ inputs.aws_account_id }}
-      #     terraform_version: ${{ inputs.terraform_version }}
-
       - name: Terraform Plan
         id: plan
         run: terraform plan -out=plan.tfplan -input=false -no-color
@@ -101,6 +98,7 @@ jobs:
   apply:
     name: "Apply"
     needs: plan
+    if: inputs.plan_only == false
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     steps:
@@ -125,12 +123,6 @@ jobs:
         with:
           terraform_version: ${{ inputs.terraform_version }}
           terraform_wrapper: false
-
-      # - name: Terraform Setup
-      #   uses: ./.github/actions/initialize-terraform
-      #   with:
-      #     aws_account_id: ${{ inputs.aws_account_id }}
-      #     terraform_version: ${{ inputs.terraform_version }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -input=false "plan.tfplan"
