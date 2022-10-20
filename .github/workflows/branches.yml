@@ -22,9 +22,9 @@ jobs:
         run: ls -alh . && ls -alh .github/workflows
       - uses: ./terraform-actions/terraform-plan
         with:
-          environment: staging
+          # environment: staging
           aws_account_id: "889550907551"
-          plan_only: false
+          # plan_only: false
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
   # staging:
