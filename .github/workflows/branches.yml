@@ -12,7 +12,9 @@ jobs:
           repository: jasonjanderson/terraform-actions
           token: ${{ secrets.GH_PAT }}
           # path: .github/workflows
-          ref: main
+          #ref: main
+      - name: ls
+        run: ls -alh
 
   staging:
     needs: setup
