@@ -11,7 +11,7 @@ jobs:
         with:
           repository: jasonjanderson/terraform-actions
           token: ${{ secrets.GH_PAT }} # `GH_PAT` is a secret that contains your PAT
-          path: terraform-actions
+          path: .github/workflows/terraform-actions
           ref: main
 
       - uses: actions/cache@v3
@@ -21,7 +21,7 @@ jobs:
 
   staging:
     needs: setup
-    uses: ./terraform-actions/terraform.yml
+    uses: ./github/workflows/terraform-actions/terraform.yml
     with:
       environment: staging
       aws_account_id: "889550907551"
@@ -29,7 +29,7 @@ jobs:
 
   production:
     needs: setup
-    uses: ./terraform-actions/terraform.yml
+    uses: ./github/workflows/terraform-actions/terraform.yml
     with:
       environment: production
       aws_account_id: "889550907551"
