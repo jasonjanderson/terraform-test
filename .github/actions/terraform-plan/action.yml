@@ -89,7 +89,6 @@ runs:
           // 2. Set the output variable
           const fs = require('fs');
           fs.writeFileSync('./summary.md', output);
-          core.setOutput('summary', output);
 
     - name: Write the step summary
       if: always()
