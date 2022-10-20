@@ -1,0 +1,103 @@
+name: "Plan"
+description: "Plans a Terraform deployment"
+inputs:
+  aws_account_id:
+    description: "The ID of the AWS account to operate on"
+    required: true
+  aws_region:
+    description: "The AWS region being used"
+    required: false
+    default: "us-east-1"
+  terraform_version:
+    description: "The version of Terraform to use"
+    required: false
+    default: "1.3.2"
+
+outputs:
+  fmt_outcome:
+    description: "The outcome of the Terraform fmt step"
+    value: ${{ steps.fmt.outcome }}
+  init_outcome:
+    description: "The outcome of the Terraform init step"
+    value: ${{ steps.init.outcome }}
+  validate_outcome:
+    description: "The outcome of the Terraform validate step"
+    value: ${{ steps.validate.outcome }}
+  plan_outcome:
+    description: "The outcome of the Terraform plan step"
+    value: ${{ steps.plan.outcome }}
+  plan_output:
+    description: "The output of the Terraform plan step"
+    value: ${{ steps.plan.outputs.stdout }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/terraform
+        role-session-name: ${{ github.triggering_actor }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+
+    - name: Terraform Format
+      id: fmt
+      shell: bash
+      run: terraform fmt -check
+
+    - name: Terraform Init
+      id: init
+      shell: bash
+      run: terraform init
+
+    - name: Terraform Validate
+      id: validate
+      shell: bash
+      run: terraform validate -no-color
+
+    - name: Terraform Plan
+      id: plan
+      shell: bash
+      run: terraform plan -out=plan.tfplan -input=false -no-color
+      continue-on-error: true
+
+    - name: Create the plan summary
+      uses: actions/github-script@v6
+      if: always()
+      id: summary
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+          #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+          #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+          #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+          \`\`\`terraform\n
+          ${{ steps.plan.outputs.stdout }}
+          \`\`\`
+
+          *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+          // 2. Set the output variable
+          const fs = require('fs');
+          fs.writeFileSync('./summary.md', output);
+          core.setOutput('summary', output);
+
+    - name: Write the step summary
+      if: always()
+      shell: bash
+      run: cat ./summary.md >> $GITHUB_STEP_SUMMARY
+
+    - uses: actions/cache@v2
+      id: restore-build
+      with:
+        path: ./*
+        key: ${{ github.sha }}
