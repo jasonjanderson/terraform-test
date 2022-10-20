@@ -19,18 +19,23 @@ jobs:
         uses: actions/checkout@v3
       - name: ls again
         run: ls -alh .github/workflows
+      - uses: ./.github/workflows/terraform.yml
+        with:
+          environment: staging
+          aws_account_id: "889550907551"
+          plan_only: false
 
-  staging:
-    needs: setup
-    uses: .github/actions/terraform
-    with:
-      environment: staging
-      aws_account_id: "889550907551"
-      plan_only: false
+  # staging:
+  #   needs: setup
+  #   uses: ./.github/workflows/terraform.yml
+  #   with:
+  #     environment: staging
+  #     aws_account_id: "889550907551"
+  #     plan_only: false
 
-  production:
-    needs: setup
-    uses: .github/actions/terraform
-    with:
-      environment: production
-      aws_account_id: "889550907551"
+  # production:
+  #   needs: setup
+  #   uses: ./.github/workflows/terraform.yml
+  #   with:
+  #     environment: production
+  #     aws_account_id: "889550907551"
