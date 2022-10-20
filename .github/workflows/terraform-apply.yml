@@ -41,6 +41,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
 
       - name: Terraform Format
         id: fmt
@@ -114,16 +115,18 @@ jobs:
           key: ${{ github.sha }}
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
           role-to-assume: arn:aws:iam::${{ inputs.aws_account_id }}:role/terraform
           role-session-name: ${{ github.triggering_actor }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: false
+
       # - name: Terraform Setup
       #   uses: ./.github/actions/initialize-terraform
       #   with:
