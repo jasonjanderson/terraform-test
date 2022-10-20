@@ -38,10 +38,9 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v2.0.2
         with:
           terraform_version: ${{ inputs.terraform_version }}
-          terraform_wrapper: false
 
       - name: Terraform Format
         id: fmt
@@ -122,7 +121,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v2.0.2
         with:
           terraform_version: ${{ inputs.terraform_version }}
           terraform_wrapper: false
