@@ -36,6 +36,7 @@ jobs:
 
   production:
     uses: ./.github/workflows/terraform.yml
+    needs: staging
     with:
       environment: production
       aws_account_id: "889550907551"
