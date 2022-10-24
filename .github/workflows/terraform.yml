@@ -32,7 +32,7 @@ permissions:
 jobs:
   security-scan:
     name: "Security Scan"
-    runs-on: [self-hosted, linux, x64, terraform]
+    runs-on: [self-hosted, terraform]
     permissions:
       security-events: write
     steps:
@@ -58,7 +58,7 @@ jobs:
   plan:
     name: "Plan"
     needs: security-scan
-    runs-on: [self-hosted, linux, x64, terraform]
+    runs-on: [self-hosted, terraform]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -153,7 +153,7 @@ jobs:
     name: "Apply"
     needs: plan
     if: inputs.plan_only == false
-    runs-on: [self-hosted, linux, x64, terraform]
+    runs-on: [self-hosted, terraform]
     environment: ${{ inputs.environment }}
     steps:
       - name: Checkout
