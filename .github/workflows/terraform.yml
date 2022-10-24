@@ -55,6 +55,7 @@ jobs:
 
   plan:
     name: "Plan"
+    needs: security-scan
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
