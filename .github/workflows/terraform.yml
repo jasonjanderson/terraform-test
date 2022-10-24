@@ -32,7 +32,7 @@ permissions:
 jobs:
   security-scan:
     name: "Security Scan"
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, terraform]
     permissions:
       security-events: write
     steps:
@@ -58,7 +58,7 @@ jobs:
   plan:
     name: "Plan"
     needs: security-scan
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, terraform]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -105,8 +105,7 @@ jobs:
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
 
-            \`\`\`\n
-            ${process.env.PLAN}
+            \`\`\`\n${process.env.PLAN}
             \`\`\`
 
             *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
@@ -154,7 +153,7 @@ jobs:
     name: "Apply"
     needs: plan
     if: inputs.plan_only == false
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, terraform]
     environment: ${{ inputs.environment }}
     steps:
       - name: Checkout

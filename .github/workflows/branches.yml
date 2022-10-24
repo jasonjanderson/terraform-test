@@ -5,29 +5,6 @@ on:
       - main
   pull_request:
 jobs:
-  # setup:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         repository: jasonjanderson/terraform-actions
-  #         token: ${{ secrets.GH_PAT }}
-  #         path: terraform-actions
-  #         #ref: main
-
-  #     - name: ls
-  #       run: ls -alh
-  #     - name: ls again
-  #       run: ls -alh . && ls -alh .github/workflows
-  #     - uses: ./terraform-actions/terraform-plan
-  #       with:
-  #         # environment: staging
-  #         aws_account_id: "889550907551"
-  #         # plan_only: false
-  #         github_token: ${{ secrets.GITHUB_TOKEN }}
-
   staging:
     uses: ./.github/workflows/terraform.yml
     with:
