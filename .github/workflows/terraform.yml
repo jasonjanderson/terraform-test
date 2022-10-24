@@ -33,6 +33,8 @@ jobs:
   security-scan:
     name: "Security Scan"
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -81,16 +83,42 @@ jobs:
         id: init
         run: make init
 
-      # - name: Terraform Validate
-      #   id: validate
-      #   run: terraform validate -no-color
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
         run: make plan
         continue-on-error: true
 
-      - name: Create Plan Summary
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+      - name: Generate Plan Summary
         uses: actions/github-script@v6
         if: always()
         id: summary
@@ -112,7 +140,7 @@ jobs:
             fs.writeFileSync('./summary.md', output);
             core.setOutput('summary', output);
 
-      - name: Write the step summary
+      - name: Update Deployment Summary with Plan
         if: always()
         run: cat ./summary.md >> $GITHUB_STEP_SUMMARY
 
