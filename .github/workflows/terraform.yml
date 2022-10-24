@@ -20,7 +20,7 @@ on:
 
 env:
   AWS_REGION: "us-east-1"
-  ENV: ${{ inputs.environemnt }}
+  ENV: ${{ inputs.environment }}
 
 permissions:
   id-token: write
