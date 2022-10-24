@@ -17,7 +17,7 @@
 .PHONY: apply destroy destroy-target plan-destroy plan plan-target init
 VARS="environment/$(ENV).tfvars"
 CURRENT_FOLDER=$(shell basename "$$(pwd)")
-STATE_BUCKET="gamechanger.terarform-state"
+STATE_BUCKET="gamechanger.terraform-state"
 DYNAMODB_TABLE="terraform-lock-table"
 WORKSPACE="$(ENV)"
 BOLD=$(shell tput bold)
