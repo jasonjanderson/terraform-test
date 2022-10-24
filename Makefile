@@ -17,6 +17,7 @@
 .PHONY: apply destroy destroy-target plan-destroy plan plan-target init
 VARS="environment/$(ENV).tfvars"
 CURRENT_FOLDER=$(shell basename "$$(pwd)")
+STATE_BUCKET="gamechanger.terarform-state"
 DYNAMODB_TABLE="terraform-lock-table"
 WORKSPACE="$(ENV)"
 BOLD=$(shell tput bold)
@@ -26,6 +27,7 @@ YELLOW=$(shell tput setaf 3)
 RESET=$(shell tput sgr0)
 
 export AWS_DEFAULT_REGION := us-east-1
+
 
 # Check for necessary tools
 ifeq (, $(shell which aws))
@@ -62,7 +64,7 @@ init: set-env ## Prepare a new workspace (environment) if needed, configure the 
 		-lock=true \
 		-upgrade \
 		-backend=true \
-		-backend-config="bucket=$(S3_BUCKET)" \
+		-backend-config="bucket=$(STATE_BUCKET)" \
 		-backend-config="key=$(GITHUB_REPOSITORY)/$(ENV).tfstate" \
 		-backend-config="dynamodb_table=$(DYNAMODB_TABLE)"\
 	    -backend-config="acl=private"
