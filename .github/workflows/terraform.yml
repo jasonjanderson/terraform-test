@@ -75,6 +75,10 @@ jobs:
         with:
           terraform_version: ${{ inputs.terraform_version }}
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+
       - name: Terraform Format
         id: fmt
         run: make format
