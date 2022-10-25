@@ -38,17 +38,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
-      # - name: Terraform Security Scan
-      #   uses: aquasecurity/tfsec-sarif-action@v0.1.3
-      #   with:
-      #     sarif_file: tfsec.sarif
+      - name: Terraform Security Scan
+        uses: aquasecurity/tfsec-sarif-action@v0.1.3
+        with:
+          sarif_file: tfsec.sarif
 
-      # - name: Upload Security Scan Results
-      #   uses: github/codeql-action/upload-sarif@v2
-      #   with:
-      #     # Path to SARIF file relative to the root of the repository
-      #     sarif_file: tfsec.sarif
+      - name: Upload Security Scan Results
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: tfsec.sarif
 
       - name: Comment PR with Security Scan Results
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
@@ -75,6 +77,7 @@ jobs:
         with:
           terraform_version: ${{ inputs.terraform_version }}
 
+      # Adding Node to ensure certain Terraform commands that depend on it will succeed
       - uses: actions/setup-node@v3
         with:
           node-version: "16"
