@@ -1,0 +1,19 @@
+name: "Terraform"
+on:
+  push:
+    branches:
+      - main
+jobs:
+  staging:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      environment: staging
+      aws_account_id: "889550907551"
+      plan_only: false
+
+  production:
+    uses: ./.github/workflows/terraform.yml
+    with:
+      environment: production
+      aws_account_id: "889550907551"
+      plan_only: false
