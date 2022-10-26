@@ -87,8 +87,7 @@ format: init ## Rewrites all Terraform configuration files to a canonical format
 lint: init ## Check for possible errors, best practices, etc in current directory!
 	@tflint
 
-# https://github.com/liamg/tfsec
-check-security: init ## Static analysis of your terraform templates to spot potential security issues.
+check-security:
 	@tfsec .
 
 plan-target: init ## Shows what a plan looks like for applying a specific resource
